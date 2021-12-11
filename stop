@@ -1,0 +1,2 @@
+docker stop todo-react
+docker rm todo-react
