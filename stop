@@ -1,2 +1,4 @@
 docker stop todo-react
 docker rm todo-react
+docker volume prune -f
+docker system prune -f
