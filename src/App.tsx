@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css';
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
@@ -38,54 +39,35 @@ type TaskListProps = {
 
 const TaskList = ((props: TaskListProps) => {
 
-  const tasks = createTasks()
-  let items = tasks.map(task =>  <TaskListItem key={task.id} { ...task} />)
+  let items = props.tasks.map(task =>  <TaskListItem key={task.id} { ...task} />)
 
   return <ListGroup>
     {items}
   </ListGroup>
 })
 
-function createTasks(): Array<TaskListItemProps> {
-  const task1 = {
-    id: 1,
-    title: "Create TODO list app in different flanguages",
-    created_at: "3 days ago",
-    description: "Create TODO list app in React, PHP + Nette, Python + Flash, Java Spring, ...",
-  }
-
-  const task2 = {
-    id: 2,
-    title: "Task 2",
+function createSampleTasks(id: number): TaskListItemProps {
+  return {
+    id,
+    title: "Task",
     created_at: "4 days ago",
     description: "Do something usefull ...",
   }
-
-  const task3 = {
-    id: 3,
-    title: "Task 4",
-    created_at: "5 days ago",
-    description: "Do something usefull ...",
-  }
-
-  const tasks = [task1, task2, task3]
-
-  return tasks
 }
-
 
 function App() {
 
-  let items = createTasks()
+  const [items, setTasks] = useState<Array<TaskListItemProps>>([]);
 
   function addTask(): void {
-    items.push({
-      id: 3,
-      title: "Task 4",
-      created_at: "5 days ago",
-      description: "Do something usefull ...",
-    });
-    console.log("addTask()", items)
+    let tasks = items.slice()
+    let max_id = Math.max.apply(Math, tasks.map(function(task) { return task.id; }))
+    if (max_id < 0) {
+      max_id = 0
+    }
+    tasks.push(createSampleTasks(max_id + 1))
+    console.log(tasks)
+    setTasks(tasks)
   }
 
   return (
@@ -94,7 +76,7 @@ function App() {
       <Container>
         <h1>My tasks</h1>
         <TaskList tasks={items} />
-        <Button onClick={addTask}>Add task</Button>
+        <Button className="mt-2" onClick={addTask}>Add task</Button>
       </Container>
     </div>
   );
