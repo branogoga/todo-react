@@ -16,48 +16,52 @@ const Navigation = (
   </Navbar>
 )
 
-type TaskListItemProps = {
+type Task = {
   id: number;
   title: string;
-  created_at: string;
   description: string;
 }
 
+type TaskListItemProps = {
+  task: Task;
+  onClose: () => any;
+}
+
 const TaskListItem = (props: TaskListItemProps) =>
-  <ListGroup.Item key={props.id}>
+  <ListGroup.Item key={props.task.id}>
     <div className="d-flex w-100 justify-content-between">
-      <h5 className="mb-1">{props.title}</h5>
-      <small>{props.created_at}</small>
+      <h5 className="mb-1">{props.task.id} - {props.task.title}</h5>
+      <Button variant="danger" size="sm" onClick={props.onClose}>X</Button>
     </div>
-    <p className="mb-1 d-flex w-100 justify-content-between">{props.description}</p>
+    <p className="mb-1 d-flex w-100 justify-content-between">{props.task.description}</p>
     <small className="d-flex w-100 justify-content-between">That will be awesome!</small>
   </ListGroup.Item>
 
 type TaskListProps = {
-  tasks: Array<TaskListItemProps>;
+  tasks: Array<Task>;
+  removeTask: (id: number, items: Array<Task>) => any;
 }
 
 const TaskList = ((props: TaskListProps) => {
 
-  let items = props.tasks.map(task =>  <TaskListItem key={task.id} { ...task} />)
+  let items = props.tasks.map((task: Task) =>  <TaskListItem key={task.id} task={task} onClose={() => { return props.removeTask(task.id, props.tasks); }} />)
 
   return <ListGroup>
     {items}
   </ListGroup>
 })
 
-function createSampleTasks(id: number): TaskListItemProps {
+function createSampleTasks(id: number): Task {
   return {
     id,
     title: "Task",
-    created_at: "4 days ago",
     description: "Do something usefull ...",
   }
 }
 
 function App() {
 
-  const [items, setTasks] = useState<Array<TaskListItemProps>>([]);
+  const [items, setItems] = useState<Array<Task>>([]);
 
   function addTask(): void {
     let tasks = items.slice()
@@ -65,9 +69,16 @@ function App() {
     if (max_id < 0) {
       max_id = 0
     }
-    tasks.push(createSampleTasks(max_id + 1))
-    console.log(tasks)
-    setTasks(tasks)
+    const new_id = max_id + 1
+
+    tasks.push(createSampleTasks(new_id))
+    setItems(tasks)
+  }
+
+  function removeTask(id: number, items: Array<Task>): any {
+    console.log("removeLastTask()", id);
+    let tasks = items.filter(task => task.id !== id)
+    setItems(tasks)
   }
 
   return (
@@ -75,8 +86,8 @@ function App() {
       {Navigation}
       <Container>
         <h1>My tasks</h1>
-        <TaskList tasks={items} />
-        <Button className="mt-2" onClick={addTask}>Add task</Button>
+        <TaskList tasks={items} removeTask={removeTask} />
+        <Button variant="success" className="mt-2" onClick={addTask}>Add task</Button>
       </Container>
     </div>
   );
