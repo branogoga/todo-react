@@ -1,0 +1,4 @@
+./stop
+npm run build
+# npm run test --watchAll=false
+./start
