@@ -1,4 +1,5 @@
 import './App.css';
+import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -21,8 +22,8 @@ type TaskListItemProps = {
   description: string;
 }
 
-function TaskListItem(props: TaskListItemProps) {
-  return <ListGroup.Item key={props.id}>
+const TaskListItem = (props: TaskListItemProps) =>
+  <ListGroup.Item key={props.id}>
     <div className="d-flex w-100 justify-content-between">
       <h5 className="mb-1">{props.title}</h5>
       <small>{props.created_at}</small>
@@ -30,13 +31,12 @@ function TaskListItem(props: TaskListItemProps) {
     <p className="mb-1 d-flex w-100 justify-content-between">{props.description}</p>
     <small className="d-flex w-100 justify-content-between">That will be awesome!</small>
   </ListGroup.Item>
-}
 
 type TaskListProps = {
   tasks: Array<TaskListItemProps>;
 }
 
-function TaskList(props: TaskListProps) { 
+const TaskList = ((props: TaskListProps) => {
 
   const tasks = createTasks()
   let items = tasks.map(task =>  <TaskListItem key={task.id} { ...task} />)
@@ -44,7 +44,7 @@ function TaskList(props: TaskListProps) {
   return <ListGroup>
     {items}
   </ListGroup>
-}
+})
 
 function createTasks(): Array<TaskListItemProps> {
   const task1 = {
@@ -75,12 +75,26 @@ function createTasks(): Array<TaskListItemProps> {
 
 
 function App() {
+
+  let items = createTasks()
+
+  function addTask(): void {
+    items.push({
+      id: 3,
+      title: "Task 4",
+      created_at: "5 days ago",
+      description: "Do something usefull ...",
+    });
+    console.log("addTask()", items)
+  }
+
   return (
     <div className="App">
       {Navigation}
       <Container>
         <h1>My tasks</h1>
-        <TaskList tasks={createTasks()} />
+        <TaskList tasks={items} />
+        <Button onClick={addTask}>Add task</Button>
       </Container>
     </div>
   );
