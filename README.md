@@ -1,5 +1,5 @@
 # TODO React
-Simple TODO List example in React.
+Simple TODO List example in React. Tasks stored in browsers local storage.
 
 ![image](https://user-images.githubusercontent.com/991056/145730598-af946562-4855-481b-8922-ef90177f18b1.png)
 
