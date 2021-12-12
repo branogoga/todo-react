@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
@@ -61,7 +61,21 @@ function createSampleTasks(id: number): Task {
 
 function App() {
 
-  const [items, setItems] = useState<Array<Task>>([]);
+  const storageKeyTasks = "tasks"
+
+  const [items, setItems] = useState<Array<Task>>(() => {
+    const savedTodos = localStorage.getItem(storageKeyTasks);
+    if (savedTodos) {
+      return JSON.parse(savedTodos);
+    } else {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(storageKeyTasks, JSON.stringify(items));
+  }, [items]);
+
 
   function addTask(): void {
     let tasks = items.slice()
